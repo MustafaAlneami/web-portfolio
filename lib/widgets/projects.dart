@@ -28,7 +28,6 @@ class ProjectsSection extends StatelessWidget {
                 runSpacing: 24,
                 children: viewModel.projects.asMap().entries.map((entry) {
                   final project = entry.value;
-                  final idx = entry.key;
                   return SizedBox(
                     width: isWide ? 340 : double.infinity,
                     child: Card(
@@ -45,11 +44,7 @@ class ProjectsSection extends StatelessWidget {
                             ClipRRect(
                               borderRadius: BorderRadius.circular(16),
                               child: Image.asset(
-                                idx == 0
-                                    ? 'assets/images/project1/1.png'
-                                    : idx == 1
-                                    ? 'assets/images/project2/1.png'
-                                    : 'assets/images/project1/2.png',
+                                project.imageUrl,
                                 height: 160,
                                 width: double.infinity,
                                 fit: BoxFit.cover,

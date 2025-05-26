@@ -17,7 +17,7 @@ class Header extends StatelessWidget {
           // Profile image
           CircleAvatar(
             radius: 56,
-            backgroundImage: AssetImage('assets/images/profile.jpg'),
+            backgroundImage: const AssetImage('assets/images/profile.jpg'),
           ),
           const SizedBox(width: 32),
           Expanded(
