@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart'; // Temporarily remove for UI preview
 import 'view/portfolio_view.dart';
 import 'viewmodel/portfolio_viewmodel.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: Replace with your Firebase config
-  await Firebase.initializeApp();
+  // Temporarily skip Firebase initialization for UI preview
+  // await Firebase.initializeApp(  options: DefaultFirebaseOptions.currentPlatform,);
   runApp(const MyApp());
 }
 

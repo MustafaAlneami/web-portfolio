@@ -21,6 +21,7 @@ class Header extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           RichTypewriter(
+            delay: 80, // Provide delay in milliseconds as int
             child: Text.rich(
               TextSpan(
                 text: 'Flutter Developer',
