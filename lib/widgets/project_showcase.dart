@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/responsive_utils.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProjectShowcase extends StatefulWidget {
   final String projectName;
@@ -237,6 +238,7 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
                   child: TextButton.icon(
                     onPressed: () {
                       // TODO: Implement URL launcher
+                      launchUrl(Uri.parse(widget.githubUrl));
                     },
                     icon: const Icon(Icons.code),
                     label: const Text('View on GitHub'),

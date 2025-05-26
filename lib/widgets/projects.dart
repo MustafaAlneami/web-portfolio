@@ -37,7 +37,7 @@ class ProjectsSection extends StatelessWidget {
           projectName: 'CarMart 🚗',
           description:
               'a simple cross-platform car marketplace app built with Flutter and Firebase!',
-          githubUrl: 'git@github.com:MustafaAlneami/CARMART.git',
+          githubUrl: 'https://github.com/MustafaAlneami/CARMART.git',
           imagePaths: [
             'assets/project1/1.png',
             'assets/project1/2.png',
@@ -53,7 +53,7 @@ class ProjectsSection extends StatelessWidget {
           projectName: 'Reco 📱 ',
           description:
               'Control your Content consumption via Scheduale contents',
-          githubUrl: 'git@github.com:MustafaAlneami/RECO.git',
+          githubUrl: 'https://github.com/MustafaAlneami/RECO.git',
           imagePaths: [
             'assets/project2/1.png',
             'assets/project2/2.png',

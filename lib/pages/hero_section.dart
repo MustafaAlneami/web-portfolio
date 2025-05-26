@@ -3,6 +3,8 @@ import '../utils/responsive_utils.dart';
 import 'projects_page.dart';
 import '../widgets/projects.dart';
 import '../viewmodel/portfolio_viewmodel.dart';
+import '../widgets/skills_section.dart';
+import '../widgets/contact_section.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -14,6 +16,8 @@ class HeroSection extends StatefulWidget {
 class _HeroSectionState extends State<HeroSection> {
   final ScrollController _scrollController = ScrollController();
   final GlobalKey _projectsSectionKey = GlobalKey();
+  final GlobalKey _skillsSectionKey = GlobalKey();
+  final GlobalKey _contactSectionKey = GlobalKey();
 
   @override
   void dispose() {
@@ -98,6 +102,42 @@ class _HeroSectionState extends State<HeroSection> {
                               );
                             },
                             child: _NavItem('Projects'),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Scroll to the skills section
+                              final RenderBox renderBox =
+                                  _skillsSectionKey.currentContext
+                                          ?.findRenderObject()
+                                      as RenderBox;
+                              final offset = renderBox.localToGlobal(
+                                Offset.zero,
+                              );
+                              _scrollController.animateTo(
+                                offset.dy + _scrollController.offset,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: _NavItem('Skills'),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Scroll to the contact section
+                              final RenderBox renderBox =
+                                  _contactSectionKey.currentContext
+                                          ?.findRenderObject()
+                                      as RenderBox;
+                              final offset = renderBox.localToGlobal(
+                                Offset.zero,
+                              );
+                              _scrollController.animateTo(
+                                offset.dy + _scrollController.offset,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: _NavItem('Contact'),
                           ),
                         ],
                       ),
@@ -218,8 +258,8 @@ class _HeroSectionState extends State<HeroSection> {
                             ),
                           ),
                     SizedBox(
-                      height: spacing * 4,
-                    ), // Add significant space before projects
+                      height: spacing * 2,
+                    ), // Reduced space before projects
                     // Projects Section
                     ConstrainedBox(
                       constraints: BoxConstraints(
@@ -230,6 +270,30 @@ class _HeroSectionState extends State<HeroSection> {
                         viewModel: viewModel,
                       ),
                     ),
+                    SizedBox(
+                      height: spacing * 2,
+                    ), // Space after projects section
+                    // Divider
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: spacing * 2,
+                        horizontal: ResponsiveUtils.getResponsivePadding(
+                          context,
+                        ).horizontal,
+                      ), // Add padding around divider
+                      child: Divider(
+                        color: Colors.white12,
+                        thickness: 1,
+                      ), // Add a subtle divider
+                    ),
+                    SizedBox(
+                      height: spacing * 2,
+                    ), // Space before skills section
+                    // Skills Section
+                    SkillsSection(key: _skillsSectionKey),
+                    const SizedBox(height: 48),
+                    // Contact Section
+                    ContactSection(key: _contactSectionKey),
                   ],
                 ),
               ),

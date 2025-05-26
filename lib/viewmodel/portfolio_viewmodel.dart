@@ -9,13 +9,13 @@ class PortfolioViewModel extends ChangeNotifier {
       title: 'Project One',
       description: 'A cool Flutter app.',
       imageUrl: 'assets/project1/1.png',
-      githubUrl: 'git@github.com:MustafaAlneami/CARMART.git',
+      githubUrl: 'https://github.com/MustafaAlneami/CARMART.git',
     ),
     Project(
       title: 'Project Two',
       description: 'Another awesome project.',
       imageUrl: 'assets/project2/1.png',
-      githubUrl: 'git@github.com:MustafaAlneami/RECO.git',
+      githubUrl: 'https://github.com/MustafaAlneami/RECO.git',
     ),
   ];
 
