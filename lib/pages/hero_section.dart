@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
+import '../utils/responsive_utils.dart';
+import 'projects_page.dart';
+import '../widgets/projects.dart';
+import '../viewmodel/portfolio_viewmodel.dart';
 
-class HeroSection extends StatelessWidget {
+class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
+
+  @override
+  State<HeroSection> createState() => _HeroSectionState();
+}
+
+class _HeroSectionState extends State<HeroSection> {
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey _projectsSectionKey = GlobalKey();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,6 +28,21 @@ class HeroSection extends StatelessWidget {
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
     );
+    final isMobile = ResponsiveUtils.isMobile(context);
+    final isTablet = ResponsiveUtils.isTablet(context);
+    final isDesktop = ResponsiveUtils.isDesktop(context);
+    final isNarrow = MediaQuery.of(context).size.width < 1000;
+    final padding = ResponsiveUtils.getResponsiveLayoutPadding(context);
+    final mascotSize = isMobile ? 180.0 : (isTablet ? 240.0 : 300.0);
+    final headlineSize = ResponsiveUtils.getResponsiveFontSize(context, 32);
+    final subHeadlineSize = ResponsiveUtils.getResponsiveFontSize(context, 24);
+    final buttonPadding = isMobile
+        ? const EdgeInsets.symmetric(horizontal: 20, vertical: 10)
+        : const EdgeInsets.symmetric(horizontal: 32, vertical: 12);
+    final spacing = ResponsiveUtils.getResponsiveSpacing(context, 24);
+
+    final viewModel = PortfolioViewModel();
+
     return Scaffold(
       backgroundColor: const Color(0xFF0A0D1A),
       body: Stack(
@@ -20,7 +53,10 @@ class HeroSection extends StatelessWidget {
             left: 0,
             right: 0,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 32),
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 16 : 60,
+                vertical: isMobile ? 16 : 32,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -30,16 +66,42 @@ class HeroSection extends StatelessWidget {
                     color: Colors.white,
                     size: 40,
                   ),
-                  // Menu
-                  Row(
-                    children: [
-                      _NavItem('Home'),
-                      _NavItem('About us'),
-                      _NavItem('Projects'),
-                      _NavItem('Certifications'),
-                      _NavItem('Achievements'),
-                    ],
-                  ),
+                  if (!isMobile && !isNarrow)
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _scrollController.animateTo(
+                                0.0,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: _NavItem('Home'),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Scroll to the projects section
+                              final RenderBox renderBox =
+                                  _projectsSectionKey.currentContext
+                                          ?.findRenderObject()
+                                      as RenderBox;
+                              final offset = renderBox.localToGlobal(
+                                Offset.zero,
+                              );
+                              _scrollController.animateTo(
+                                offset.dy + _scrollController.offset,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: _NavItem('Projects'),
+                          ),
+                        ],
+                      ),
+                    ),
                   // WhatsApp Button
                   Container(
                     decoration: BoxDecoration(
@@ -47,10 +109,7 @@ class HeroSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(32),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 8,
-                      ),
+                      padding: buttonPadding,
                       child: Row(
                         children: const [
                           Icon(Icons.message, color: Colors.white),
@@ -67,146 +126,112 @@ class HeroSection extends StatelessWidget {
               ),
             ),
           ),
-          // Sidebar
-          Positioned(
-            left: 0,
-            top: 120,
-            bottom: 0,
-            child: Column(
-              children: [
-                // Hamburger
-                Container(
-                  margin: const EdgeInsets.only(left: 8, bottom: 16),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF181B2A),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(Icons.menu, color: Colors.white),
-                ),
-                RotatedBox(
-                  quarterTurns: -1,
-                  child: const Text(
-                    'Follow Me',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Container(width: 2, height: 40, color: Colors.white),
-                const SizedBox(height: 16),
-                _SocialIcon(Icons.person),
-                _SocialIcon(Icons.code),
-                _SocialIcon(Icons.language),
-                _SocialIcon(Icons.alternate_email),
-                _SocialIcon(Icons.person),
-              ],
-            ),
-          ),
-          // Main Content
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 120.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
+          // Sidebar (hide on mobile)
+          if (!isMobile)
+            Positioned(
+              left: 0,
+              top: isDesktop ? 120 : 80,
+              bottom: 0,
+              child: Column(
                 children: [
-                  // Left: Texts
-                  SizedBox(
-                    width: 500,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'My Personal Portfolio',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.displayLarge?.copyWith(fontSize: 48),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Text(
-                              'Flutter ',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.displayLarge?.copyWith(fontSize: 38),
-                            ),
-                            ShaderMask(
-                              shaderCallback: (bounds) =>
-                                  gradient.createShader(bounds),
-                              child: const Text(
-                                'Developer',
-                                style: TextStyle(
-                                  fontSize: 38,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                  RotatedBox(
+                    quarterTurns: -1,
+                    child: const Text(
+                      'Follow Me',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(width: 2, height: 40, color: Colors.white),
+                  const SizedBox(height: 16),
+
+                  _SocialIcon(Icons.code),
+
+                  _SocialIcon(Icons.alternate_email),
+                ],
+              ),
+            ),
+          // Main Content and Projects Section (Scrollable)
+          Positioned.fill(
+            top: isMobile ? 80 : 120, // Adjust based on navigation bar height
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Padding(
+                padding:
+                    padding, // Use responsive padding for the whole scrollable area
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.center, // Center column content
+                  children: [
+                    // Hero Content (Texts and Mascot)
+                    isMobile || isNarrow
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              _HeroTexts(
+                                headlineSize: headlineSize,
+                                subHeadlineSize: subHeadlineSize,
+                                gradient: gradient,
+                                spacing: spacing,
+                                buttonPadding: buttonPadding,
+                                isMobile: true,
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          "I'm capable of creating excellent mobile apps, handling every step from concept to deployment.",
-                          style: TextStyle(color: Colors.white70, fontSize: 16),
-                        ),
-                        const SizedBox(height: 32),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: gradient,
-                            borderRadius: BorderRadius.circular(32),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 12,
-                            ),
+                              SizedBox(
+                                height: spacing * 2,
+                              ), // Add more space after hero content
+                              BouncingMascotBox(
+                                mascotSize: mascotSize,
+                                gradient: gradient,
+                              ),
+                            ],
+                          )
+                        : ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth: ResponsiveUtils.getContentWidth(
+                                context,
+                              ),
+                            ), // Constrain width for larger screens
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: const [
-                                Text(
-                                  'Download CV ',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Flexible(
+                                  flex: 2,
+                                  child: _HeroTexts(
+                                    headlineSize: headlineSize,
+                                    subHeadlineSize: subHeadlineSize,
+                                    gradient: gradient,
+                                    spacing: spacing,
+                                    buttonPadding: buttonPadding,
+                                    isMobile: false,
                                   ),
                                 ),
-                                Icon(Icons.download, color: Colors.white),
+                                SizedBox(width: spacing * 2),
+                                Flexible(
+                                  flex: 1,
+                                  child: BouncingMascotBox(
+                                    mascotSize: mascotSize,
+                                    gradient: gradient,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 80),
-                  // Right: Mascot
-                  Container(
-                    width: 300,
-                    height: 320,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(32),
-                      gradient: gradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.pinkAccent.withOpacity(0.4),
-                          blurRadius: 32,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Image.asset(
-                          'assets/images/dash1.png',
-                          fit: BoxFit.contain,
-                        ),
+                    SizedBox(
+                      height: spacing * 4,
+                    ), // Add significant space before projects
+                    // Projects Section
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: ResponsiveUtils.getContentWidth(context),
+                      ), // Constrain width for larger screens
+                      child: ProjectsSection(
+                        key: _projectsSectionKey,
+                        viewModel: viewModel,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -216,27 +241,220 @@ class HeroSection extends StatelessWidget {
   }
 }
 
-class _NavItem extends StatelessWidget {
-  final String label;
-  const _NavItem(this.label);
+class _HeroTexts extends StatelessWidget {
+  final double headlineSize;
+  final double subHeadlineSize;
+  final Gradient gradient;
+  final double spacing;
+  final EdgeInsets buttonPadding;
+  final bool isMobile;
+  const _HeroTexts({
+    required this.headlineSize,
+    required this.subHeadlineSize,
+    required this.gradient,
+    required this.spacing,
+    required this.buttonPadding,
+    required this.isMobile,
+  });
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Text(
-        label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
+    return Column(
+      crossAxisAlignment: isMobile
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Mustafa Al-Neaimi',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: headlineSize,
+          ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.left,
+        ),
+        SizedBox(height: spacing / 2),
+        Row(
+          mainAxisAlignment: isMobile
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          children: [
+            Text(
+              'Flutter ',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: subHeadlineSize,
+              ),
+            ),
+            ShaderMask(
+              shaderCallback: (bounds) => gradient.createShader(bounds),
+              child: Text(
+                'Developer',
+                style: TextStyle(
+                  fontSize: subHeadlineSize,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: spacing / 2),
+        const Text(
+          "Flutter wizard 🧙‍♂️ — coding apps, dodging bugs, and living on coffee ☕🚀",
+          style: TextStyle(color: Colors.white70, fontSize: 16),
+        ),
+        SizedBox(height: 30),
+        Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(32),
+          ),
+          child: Padding(
+            padding: buttonPadding,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text(
+                  'Download CV ',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Icon(Icons.download, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: ResponsiveUtils.getResponsiveSpacing(context, 15)),
+      ],
+    );
+  }
+}
+
+class BouncingMascotBox extends StatefulWidget {
+  final double mascotSize;
+  final Gradient gradient;
+  const BouncingMascotBox({required this.mascotSize, required this.gradient});
+  @override
+  State<BouncingMascotBox> createState() => _BouncingMascotBoxState();
+}
+
+class _BouncingMascotBoxState extends State<BouncingMascotBox>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(
+      begin: 0,
+      end: 24,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(0, -_animation.value),
+          child: child,
+        );
+      },
+      child: Container(
+        width: widget.mascotSize,
+        height: widget.mascotSize + 20,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(32),
+          gradient: widget.gradient,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.pinkAccent.withOpacity(0.4),
+              blurRadius: 32,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Image.asset('assets/images/dash1.png', fit: BoxFit.contain),
+          ),
         ),
       ),
     );
   }
 }
 
+// Define _NavItem class at the top level
+class _NavItem extends StatefulWidget {
+  final String label;
+  const _NavItem(this.label, {Key? key}) : super(key: key);
+
+  @override
+  State<_NavItem> createState() => _NavItemState();
+}
+
+class _NavItemState extends State<_NavItem> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final gradient = const LinearGradient(
+      colors: [Color(0xFFDA22FF), Color(0xFF3A8DFF)],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        decoration: BoxDecoration(
+          gradient: _isHovered ? gradient : null,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            if (_isHovered)
+              BoxShadow(
+                color: Colors.purpleAccent.withOpacity(0.5),
+                blurRadius: 12,
+                spreadRadius: 2,
+              ),
+          ],
+        ),
+        child: Text(
+          widget.label,
+          style: TextStyle(
+            color: _isHovered ? Colors.white : Colors.white70,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Define _SocialIcon class at the top level
 class _SocialIcon extends StatelessWidget {
   final IconData icon;
-  const _SocialIcon(this.icon);
+  const _SocialIcon(this.icon, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(

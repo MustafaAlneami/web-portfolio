@@ -22,6 +22,7 @@ class ProjectShowcase extends StatefulWidget {
 class _ProjectShowcaseState extends State<ProjectShowcase> {
   int? _hoveredIndex;
   int? _selectedImageIndex;
+  bool _isHovered = false;
 
   void _showFullScreenImage(BuildContext context, int index) {
     setState(() {
@@ -140,148 +141,111 @@ class _ProjectShowcaseState extends State<ProjectShowcase> {
     final theme = Theme.of(context);
     final isDesktop = ResponsiveUtils.isDesktop(context);
     final isTablet = ResponsiveUtils.isTablet(context);
+    final neonGradient = const LinearGradient(
+      colors: [Color(0xFFDA22FF), Color(0xFF3A8DFF)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    );
 
-    return Card(
-      margin: EdgeInsets.symmetric(
-        vertical: 16,
-        horizontal: isDesktop ? 32 : 16,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Project Title and Description
-          Padding(
-            padding: const EdgeInsets.all(16),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+        margin: EdgeInsets.symmetric(
+          vertical: 16,
+          horizontal: isDesktop ? 32 : 16,
+        ),
+        decoration: BoxDecoration(
+          gradient: neonGradient,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: _isHovered
+                  ? Colors.purpleAccent.withOpacity(0.7)
+                  : Colors.purpleAccent.withOpacity(0.4),
+              blurRadius: _isHovered ? 40 : 24,
+              spreadRadius: _isHovered ? 6 : 2,
+            ),
+          ],
+        ),
+        child: AnimatedScale(
+          scale: _isHovered ? 1.02 : 1.0,
+          duration: const Duration(milliseconds: 300),
+          child: Card(
+            margin: EdgeInsets.zero,
+            color: Theme.of(context).cardColor,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.projectName, style: theme.textTheme.displaySmall),
-                const SizedBox(height: 8),
-                Text(widget.description, style: theme.textTheme.bodyLarge),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.projectName,
+                        style: theme.textTheme.displaySmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.description,
+                        style: theme.textTheme.bodyLarge,
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final crossAxisCount =
+                          ResponsiveUtils.getGridCrossAxisCount(context);
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount,
+                          crossAxisSpacing: ResponsiveUtils.getGridSpacing(
+                            context,
+                          ),
+                          mainAxisSpacing: ResponsiveUtils.getGridSpacing(
+                            context,
+                          ),
+                          childAspectRatio:
+                              ResponsiveUtils.getGridChildAspectRatio(context),
+                        ),
+                        itemCount: widget.imagePaths.length,
+                        itemBuilder: (context, index) {
+                          return _buildImageFrame(
+                            widget.imagePaths[index],
+                            index,
+                            _hoveredIndex == index,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: TextButton.icon(
+                    onPressed: () {
+                      // TODO: Implement URL launcher
+                    },
+                    icon: const Icon(Icons.code),
+                    label: const Text('View on GitHub'),
+                  ),
+                ),
               ],
             ),
           ),
-          // Artistic Collage Layout
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final width = constraints.maxWidth;
-                final isWide = width > 800;
-                final isMedium = width > 600;
-
-                return Column(
-                  children: [
-                    // Top row with 2 images
-                    Row(
-                      children: [
-                        Expanded(
-                          flex: isWide ? 2 : 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: _buildImageFrame(
-                                widget.imagePaths[0],
-                                0,
-                                _hoveredIndex == 0,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (isMedium)
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: _buildImageFrame(
-                                  widget.imagePaths[1],
-                                  1,
-                                  _hoveredIndex == 1,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    // Middle row with 3 images
-                    Row(
-                      children: [
-                        if (isMedium)
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: _buildImageFrame(
-                                  widget.imagePaths[2],
-                                  2,
-                                  _hoveredIndex == 2,
-                                ),
-                              ),
-                            ),
-                          ),
-                        Expanded(
-                          flex: isWide ? 2 : 1,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: AspectRatio(
-                              aspectRatio: 16 / 9,
-                              child: _buildImageFrame(
-                                widget.imagePaths[3],
-                                3,
-                                _hoveredIndex == 3,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (isMedium)
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: _buildImageFrame(
-                                  widget.imagePaths[4],
-                                  4,
-                                  _hoveredIndex == 4,
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    // Bottom row with 1 image
-                    if (isMedium)
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: _buildImageFrame(
-                            widget.imagePaths[5],
-                            5,
-                            _hoveredIndex == 5,
-                          ),
-                        ),
-                      ),
-                  ],
-                );
-              },
-            ),
-          ),
-          // GitHub Link
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: TextButton.icon(
-              onPressed: () {
-                // TODO: Implement URL launcher
-              },
-              icon: const Icon(Icons.code),
-              label: const Text('View on GitHub'),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

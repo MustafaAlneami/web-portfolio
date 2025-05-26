@@ -41,11 +41,11 @@ class ResponsiveUtils {
     if (width < mobileBreakpoint) {
       return 2;
     } else if (width < tabletBreakpoint) {
-      return 3;
+      return 2; // Show 2 columns on tablet
     } else if (width < 1400) {
-      return 4;
+      return 3; // Show 3 columns on desktop up to 1400
     } else {
-      return 5; // For very large screens
+      return 3; // Still show 3 columns for very large screens
     }
   }
 
@@ -54,11 +54,11 @@ class ResponsiveUtils {
 
   static double getGridChildAspectRatio(BuildContext context) {
     if (isMobile(context)) {
-      return 0.85; // Slightly taller cards for mobile
+      return 1.6; // Make aspect ratio even smaller for mobile
     } else if (isTablet(context)) {
-      return 0.88;
+      return 1.3; // Adjust aspect ratio for tablet
     } else {
-      return 0.9; // Better proportions for desktop
+      return 1.7; // Adjust aspect ratio for desktop, closer to 16:9
     }
   }
 
