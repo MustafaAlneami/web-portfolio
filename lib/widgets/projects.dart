@@ -53,6 +53,18 @@ class ProjectsSection extends StatelessWidget {
                                 height: 160,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Container(
+                                      height: 160,
+                                      color: Colors.blue.shade50,
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.broken_image,
+                                          size: 48,
+                                          color: Colors.blueGrey,
+                                        ),
+                                      ),
+                                    ),
                               ),
                             ),
                             const SizedBox(height: 12),
