@@ -8,19 +8,19 @@ class PortfolioViewModel extends ChangeNotifier {
     Project(
       title: 'Project One',
       description: 'A cool Flutter app.',
-      imageUrl: 'https://via.placeholder.com/300',
+      imageUrl: 'assets/images/project1/1.png',
       githubUrl: 'https://github.com/yourusername/project1',
     ),
     Project(
       title: 'Project Two',
       description: 'Another awesome project.',
-      imageUrl: 'https://via.placeholder.com/300',
+      imageUrl: 'assets/images/project2/1.png',
       githubUrl: 'https://github.com/yourusername/project2',
     ),
     Project(
       title: 'Project Three',
       description: 'A web portfolio!',
-      imageUrl: 'https://via.placeholder.com/300',
+      imageUrl: 'assets/images/project1/2.png',
       githubUrl: 'https://github.com/yourusername/project3',
     ),
   ];

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SocialFooter extends StatelessWidget {
   const SocialFooter({super.key});
@@ -11,7 +12,10 @@ class SocialFooter extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.code),
+            icon: Image.asset(
+              'assets/social _media_icons/githubicon.png',
+              width: 32,
+            ),
             tooltip: 'GitHub',
             onPressed: () {
               // TODO: Open GitHub
@@ -19,7 +23,10 @@ class SocialFooter extends StatelessWidget {
           ),
           const SizedBox(width: 16),
           IconButton(
-            icon: const Icon(Icons.business),
+            icon: Image.asset(
+              'assets/social _media_icons/linkedin icon.png',
+              width: 32,
+            ),
             tooltip: 'LinkedIn',
             onPressed: () {
               // TODO: Open LinkedIn

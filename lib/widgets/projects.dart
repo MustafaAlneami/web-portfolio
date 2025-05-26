@@ -14,9 +14,10 @@ class ProjectsSection extends StatelessWidget {
         children: [
           Text(
             'Projects',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1976D2),
+            ),
           ),
           const SizedBox(height: 16),
           LayoutBuilder(
@@ -25,13 +26,16 @@ class ProjectsSection extends StatelessWidget {
               return Wrap(
                 spacing: 24,
                 runSpacing: 24,
-                children: viewModel.projects.map((project) {
+                children: viewModel.projects.asMap().entries.map((entry) {
+                  final project = entry.value;
+                  final idx = entry.key;
                   return SizedBox(
-                    width: isWide ? 320 : double.infinity,
+                    width: isWide ? 340 : double.infinity,
                     child: Card(
-                      elevation: 4,
+                      elevation: 8,
+                      shadowColor: Colors.blue.shade100,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -39,9 +43,13 @@ class ProjectsSection extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                project.imageUrl,
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                idx == 0
+                                    ? 'assets/images/project1/1.png'
+                                    : idx == 1
+                                    ? 'assets/images/project2/1.png'
+                                    : 'assets/images/project1/2.png',
                                 height: 160,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
