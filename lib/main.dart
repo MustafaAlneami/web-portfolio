@@ -5,7 +5,7 @@ import 'view/portfolio_view.dart';
 import 'viewmodel/portfolio_viewmodel.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  //WidgetsFlutterBinding.ensureInitialized();
   // Temporarily skip Firebase initialization for UI preview
   // await Firebase.initializeApp(  options: DefaultFirebaseOptions.currentPlatform,);
   runApp(const MyApp());
