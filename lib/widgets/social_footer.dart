@@ -13,7 +13,7 @@ class SocialFooter extends StatelessWidget {
         children: [
           IconButton(
             icon: Image.asset(
-              'assets/social _media_icons/githubicon.png',
+              'assets/social_media_icons/githubicon.png',
               width: 32,
             ),
             tooltip: 'GitHub',
@@ -24,7 +24,7 @@ class SocialFooter extends StatelessWidget {
           const SizedBox(width: 16),
           IconButton(
             icon: Image.asset(
-              'assets/social _media_icons/linkedin icon.png',
+              'assets/social_media_icons/linkedinicon.png',
               width: 32,
             ),
             tooltip: 'LinkedIn',

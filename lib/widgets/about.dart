@@ -36,7 +36,7 @@ class AboutSection extends StatelessWidget {
             Expanded(
               flex: 1,
               child: Lottie.asset(
-                'assets/animations/Man coding.json',
+                'assets/animations/Man_coding.json',
                 repeat: true,
                 animate: true,
               ),
