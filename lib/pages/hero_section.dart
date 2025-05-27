@@ -188,7 +188,7 @@ class _HeroSectionState extends State<HeroSection> {
 
                   _SocialIcon(Icons.code),
 
-                  _SocialIcon(Icons.alternate_email),
+                  _SocialIcon(Icons.work),
                 ],
               ),
             ),
@@ -257,8 +257,8 @@ class _HeroSectionState extends State<HeroSection> {
                             ),
                           ),
                     SizedBox(
-                      height: spacing * 4,
-                    ), // Space after hero content and before skills
+                      height: spacing * 2,
+                    ), // Reduced space after hero content and before skills carousel
                     // Skills Carousel
                     ConstrainedBox(
                       constraints: BoxConstraints(

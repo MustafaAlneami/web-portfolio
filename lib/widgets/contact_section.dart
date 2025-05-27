@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../utils/responsive_utils.dart';
 
 class ContactSection extends StatelessWidget {
@@ -66,21 +67,14 @@ class ContactSection extends StatelessWidget {
                   _ContactCard(
                     icon: Icons.email,
                     title: 'Email',
-                    content: 'your.email@example.com',
+                    content: 'alneaimimustafa@gmail.com',
                     gradient: neonGradient,
                     width: itemWidth,
                   ),
                   _ContactCard(
                     icon: Icons.phone,
                     title: 'Phone',
-                    content: '+1 (555) 123-4567',
-                    gradient: neonGradient,
-                    width: itemWidth,
-                  ),
-                  _ContactCard(
-                    icon: Icons.location_on,
-                    title: 'Location',
-                    content: 'Your Location',
+                    content: '+9647725735393',
                     gradient: neonGradient,
                     width: itemWidth,
                   ),
@@ -109,53 +103,125 @@ class _ContactCard extends StatelessWidget {
     required this.width,
   });
 
+  void _showCopyDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black.withOpacity(0.9),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: BorderSide(
+              color: Colors.purpleAccent.withOpacity(0.5),
+              width: 1,
+            ),
+          ),
+          title: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green, size: 24),
+              SizedBox(width: 8),
+              Text(
+                'Copied!',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            '$title has been copied to clipboard',
+            style: TextStyle(color: Colors.white70, fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'OK',
+                style: TextStyle(
+                  color: Colors.purpleAccent,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.05),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            Clipboard.setData(ClipboardData(text: content));
+            _showCopyDialog(context);
+          },
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.purpleAccent.withOpacity(0.3),
-            width: 1,
-          ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: Container(
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                gradient: gradient,
+                color: Colors.white.withOpacity(0.05),
                 borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Colors.purpleAccent.withOpacity(0.3),
+                  width: 1,
+                ),
               ),
-              child: Icon(
-                icon,
-                color: Colors.white,
-                size: ResponsiveUtils.getIconSize(context, baseSize: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      gradient: gradient,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: Colors.white,
+                      size: ResponsiveUtils.getIconSize(context, baseSize: 24),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: ResponsiveUtils.getResponsiveFontSize(
+                        context,
+                        18,
+                      ),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    content,
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: ResponsiveUtils.getResponsiveFontSize(
+                        context,
+                        16,
+                      ),
+                      decoration: title == 'Email'
+                          ? TextDecoration.underline
+                          : null,
+                      decorationColor: Colors.purpleAccent.withOpacity(0.5),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: ResponsiveUtils.getResponsiveFontSize(context, 18),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              content,
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: ResponsiveUtils.getResponsiveFontSize(context, 16),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
