@@ -87,24 +87,6 @@ class _HeroSectionState extends State<HeroSection> {
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Scroll to the projects section
-                              final RenderBox renderBox =
-                                  _projectsSectionKey.currentContext
-                                          ?.findRenderObject()
-                                      as RenderBox;
-                              final offset = renderBox.localToGlobal(
-                                Offset.zero,
-                              );
-                              _scrollController.animateTo(
-                                offset.dy + _scrollController.offset,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeInOut,
-                              );
-                            },
-                            child: _NavItem('Projects'),
-                          ),
-                          GestureDetector(
-                            onTap: () {
                               // Scroll to the skills section
                               final RenderBox renderBox =
                                   _skillsSectionKey.currentContext
@@ -120,6 +102,24 @@ class _HeroSectionState extends State<HeroSection> {
                               );
                             },
                             child: _NavItem('Skills'),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              // Scroll to the projects section
+                              final RenderBox renderBox =
+                                  _projectsSectionKey.currentContext
+                                          ?.findRenderObject()
+                                      as RenderBox;
+                              final offset = renderBox.localToGlobal(
+                                Offset.zero,
+                              );
+                              _scrollController.animateTo(
+                                offset.dy + _scrollController.offset,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: _NavItem('Projects'),
                           ),
                           GestureDetector(
                             onTap: () {
@@ -216,9 +216,7 @@ class _HeroSectionState extends State<HeroSection> {
                                 buttonPadding: buttonPadding,
                                 isMobile: true,
                               ),
-                              SizedBox(
-                                height: spacing * 2,
-                              ), // Add more space after hero content
+                              SizedBox(height: spacing * 2),
                               BouncingMascotBox(
                                 mascotSize: mascotSize,
                                 gradient: gradient,
@@ -230,7 +228,7 @@ class _HeroSectionState extends State<HeroSection> {
                               maxWidth: ResponsiveUtils.getContentWidth(
                                 context,
                               ),
-                            ), // Constrain width for larger screens
+                            ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,8 +256,11 @@ class _HeroSectionState extends State<HeroSection> {
                             ),
                           ),
                     SizedBox(
-                      height: spacing * 2,
-                    ), // Reduced space before projects
+                      height: spacing * 4,
+                    ), // Space after hero content and before skills
+                    // Skills Section
+                    SkillsSection(key: _skillsSectionKey),
+                    const SizedBox(height: 48), // Consistent space after skills
                     // Projects Section
                     ConstrainedBox(
                       constraints: BoxConstraints(
@@ -270,10 +271,10 @@ class _HeroSectionState extends State<HeroSection> {
                         viewModel: viewModel,
                       ),
                     ),
-                    SizedBox(
-                      height: spacing * 2,
-                    ), // Space after projects section
-                    // Divider
+                    const SizedBox(
+                      height: 48,
+                    ), // Consistent space after projects
+                    // Divider (Moved before contact section)
                     Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: spacing * 2,
@@ -286,11 +287,6 @@ class _HeroSectionState extends State<HeroSection> {
                         thickness: 1,
                       ), // Add a subtle divider
                     ),
-                    SizedBox(
-                      height: spacing * 2,
-                    ), // Space before skills section
-                    // Skills Section
-                    SkillsSection(key: _skillsSectionKey),
                     const SizedBox(height: 48),
                     // Contact Section
                     ContactSection(key: _contactSectionKey),
