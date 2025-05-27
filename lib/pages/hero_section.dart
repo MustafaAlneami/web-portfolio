@@ -5,6 +5,7 @@ import '../widgets/projects.dart';
 import '../viewmodel/portfolio_viewmodel.dart';
 import '../widgets/skills_section.dart';
 import '../widgets/contact_section.dart';
+import '../widgets/skills_carousel.dart';
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -258,6 +259,16 @@ class _HeroSectionState extends State<HeroSection> {
                     SizedBox(
                       height: spacing * 4,
                     ), // Space after hero content and before skills
+                    // Skills Carousel
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: ResponsiveUtils.getContentWidth(context),
+                      ),
+                      child: const SkillsCarousel(),
+                    ),
+                    const SizedBox(
+                      height: 48,
+                    ), // Space between carousel and skills section
                     // Skills Section
                     SkillsSection(key: _skillsSectionKey),
                     const SizedBox(height: 48), // Consistent space after skills
