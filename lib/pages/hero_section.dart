@@ -9,16 +9,24 @@ import '../widgets/skills_carousel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Define _SocialIcon class at the top level
-class _SocialIcon extends StatelessWidget {
+class _SocialIcon extends StatefulWidget {
   final String icon;
   final String url;
   final String tooltip;
 
   const _SocialIcon({
+    super.key,
     required this.icon,
     required this.url,
     required this.tooltip,
   });
+
+  @override
+  State<_SocialIcon> createState() => _SocialIconState();
+}
+
+class _SocialIconState extends State<_SocialIcon> {
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
@@ -26,24 +34,33 @@ class _SocialIcon extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
         child: Tooltip(
-          message: tooltip,
-          child: GestureDetector(
-            onTap: () {
-              launchUrl(Uri.parse(url));
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.purpleAccent.withOpacity(0.3),
-                  width: 1,
-                ),
+          message: widget.tooltip,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: _isHovered
+                    ? Colors.purpleAccent.withOpacity(0.8)
+                    : Colors.purpleAccent.withOpacity(0.3),
+                width: _isHovered ? 2 : 1,
               ),
-              child: Image.asset(icon, width: 24, height: 24),
+              boxShadow: [
+                if (_isHovered)
+                  BoxShadow(
+                    color: Colors.purpleAccent.withOpacity(0.6),
+                    blurRadius: 15,
+                    spreadRadius: 3,
+                  ),
+              ],
             ),
+            child: Image.asset(widget.icon, width: 24, height: 24),
           ),
         ),
       ),
@@ -229,26 +246,70 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 16),
                   Container(width: 2, height: 40, color: Colors.white),
                   const SizedBox(height: 16),
-                  _SocialIcon(
-                    icon: 'assets/social_media_icons/x1.png',
-                    url: 'https://x.com/MustaVerse',
-                    tooltip: 'X',
+                  InkWell(
+                    onTap: () {
+                      launchUrl(Uri.parse('https://x.com/MustaVerse'));
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
+                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    child: _SocialIcon(
+                      icon: 'assets/social_media_icons/x1.png',
+                      url: 'https://x.com/MustaVerse',
+                      tooltip: 'X',
+                    ),
                   ),
-                  _SocialIcon(
-                    icon: 'assets/social_media_icons/linkedin1.png',
-                    url: 'https://www.linkedin.com/in/mustafa-al-neaimi/',
-                    tooltip: 'LinkedIn',
+                  InkWell(
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse(
+                          'https://www.linkedin.com/in/mustafa-al-neaimi/',
+                        ),
+                      );
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
+                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    child: _SocialIcon(
+                      icon: 'assets/social_media_icons/linkedin1.png',
+                      url: 'https://www.linkedin.com/in/mustafa-al-neaimi/',
+                      tooltip: 'LinkedIn',
+                    ),
                   ),
-                  _SocialIcon(
-                    icon: 'assets/social_media_icons/upwork.png',
-                    url:
-                        'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
-                    tooltip: 'Upwork',
+                  InkWell(
+                    onTap: () {
+                      launchUrl(
+                        Uri.parse(
+                          'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
+                        ),
+                      );
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
+                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    child: _SocialIcon(
+                      icon: 'assets/social_media_icons/upwork.png',
+                      url:
+                          'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
+                      tooltip: 'Upwork',
+                    ),
                   ),
-                  _SocialIcon(
-                    icon: 'assets/social_media_icons/githubicon.png',
-                    url: 'https://github.com/MustafaAlneami',
-                    tooltip: 'GitHub',
+                  InkWell(
+                    onTap: () {
+                      launchUrl(Uri.parse('https://github.com/MustafaAlneami'));
+                    },
+                    splashFactory: InkRipple.splashFactory,
+                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
+                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                    child: _SocialIcon(
+                      icon: 'assets/social_media_icons/githubicon.png',
+                      url: 'https://github.com/MustafaAlneami',
+                      tooltip: 'GitHub',
+                    ),
                   ),
                 ],
               ),
@@ -258,6 +319,9 @@ class _HeroSectionState extends State<HeroSection> {
             top: isMobile ? 80 : 120, // Adjust based on navigation bar height
             child: SingleChildScrollView(
               controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              physics:
+                  const BouncingScrollPhysics(), // Use BouncingScrollPhysics for a nice effect
               child: Padding(
                 padding:
                     padding, // Use responsive padding for the whole scrollable area
