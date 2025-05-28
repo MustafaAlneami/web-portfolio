@@ -6,6 +6,50 @@ import '../viewmodel/portfolio_viewmodel.dart';
 import '../widgets/skills_section.dart';
 import '../widgets/contact_section.dart';
 import '../widgets/skills_carousel.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Define _SocialIcon class at the top level
+class _SocialIcon extends StatelessWidget {
+  final String icon;
+  final String url;
+  final String tooltip;
+
+  const _SocialIcon({
+    required this.icon,
+    required this.url,
+    required this.tooltip,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Tooltip(
+          message: tooltip,
+          child: GestureDetector(
+            onTap: () {
+              launchUrl(Uri.parse(url));
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.purpleAccent.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Image.asset(icon, width: 24, height: 24),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
@@ -185,10 +229,27 @@ class _HeroSectionState extends State<HeroSection> {
                   const SizedBox(height: 16),
                   Container(width: 2, height: 40, color: Colors.white),
                   const SizedBox(height: 16),
-
-                  _SocialIcon(Icons.code),
-
-                  _SocialIcon(Icons.work),
+                  _SocialIcon(
+                    icon: 'assets/social_media_icons/x1.png',
+                    url: 'https://x.com/MustaVerse',
+                    tooltip: 'X',
+                  ),
+                  _SocialIcon(
+                    icon: 'assets/social_media_icons/linkedin1.png',
+                    url: 'https://www.linkedin.com/in/mustafa-al-neaimi/',
+                    tooltip: 'LinkedIn',
+                  ),
+                  _SocialIcon(
+                    icon: 'assets/social_media_icons/upwork.png',
+                    url:
+                        'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
+                    tooltip: 'Upwork',
+                  ),
+                  _SocialIcon(
+                    icon: 'assets/social_media_icons/githubicon.png',
+                    url: 'https://github.com/MustafaAlneami',
+                    tooltip: 'GitHub',
+                  ),
                 ],
               ),
             ),
@@ -518,19 +579,6 @@ class _NavItemState extends State<_NavItem> {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Define _SocialIcon class at the top level
-class _SocialIcon extends StatelessWidget {
-  final IconData icon;
-  const _SocialIcon(this.icon, {Key? key}) : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Icon(icon, color: Colors.white, size: 24),
     );
   }
 }
