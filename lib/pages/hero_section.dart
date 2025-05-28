@@ -1,32 +1,38 @@
 import 'package:flutter/material.dart';
 import '../utils/responsive_utils.dart';
-import 'projects_page.dart';
+
 import '../widgets/projects.dart';
 import '../viewmodel/portfolio_viewmodel.dart';
 import '../widgets/skills_section.dart';
 import '../widgets/contact_section.dart';
 import '../widgets/skills_carousel.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 // Define _SocialIcon class at the top level
-class _SocialIcon extends StatefulWidget {
+class _SocialIcon extends StatelessWidget {
   final String icon;
   final String url;
   final String tooltip;
 
   const _SocialIcon({
-    super.key,
     required this.icon,
     required this.url,
     required this.tooltip,
   });
 
-  @override
-  State<_SocialIcon> createState() => _SocialIconState();
-}
-
-class _SocialIconState extends State<_SocialIcon> {
-  bool _isHovered = false;
+  Future<void> _launchURL() async {
+    try {
+      final Uri uri = Uri.parse(url);
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch URL: $url');
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +40,22 @@ class _SocialIconState extends State<_SocialIcon> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
         child: Tooltip(
-          message: widget.tooltip,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _isHovered
-                    ? Colors.purpleAccent.withOpacity(0.8)
-                    : Colors.purpleAccent.withOpacity(0.3),
-                width: _isHovered ? 2 : 1,
+          message: tooltip,
+          child: GestureDetector(
+            onTap: _launchURL,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.purpleAccent.withOpacity(0.3),
+                  width: 1,
+                ),
               ),
-              boxShadow: [
-                if (_isHovered)
-                  BoxShadow(
-                    color: Colors.purpleAccent.withOpacity(0.6),
-                    blurRadius: 15,
-                    spreadRadius: 3,
-                  ),
-              ],
+              child: Image.asset(icon, width: 24, height: 24),
             ),
-            child: Image.asset(widget.icon, width: 24, height: 24),
           ),
         ),
       ),
@@ -234,85 +229,7 @@ class _HeroSectionState extends State<HeroSection> {
               left: 0,
               top: isDesktop ? 120 : 80,
               bottom: 0,
-              child: Column(
-                children: [
-                  RotatedBox(
-                    quarterTurns: -1,
-                    child: const Text(
-                      'Follow Me',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(width: 2, height: 40, color: Colors.white),
-                  const SizedBox(height: 16),
-                  InkWell(
-                    onTap: () {
-                      launchUrl(Uri.parse('https://x.com/MustaVerse'));
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
-                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    child: _SocialIcon(
-                      icon: 'assets/social_media_icons/x1.png',
-                      url: 'https://x.com/MustaVerse',
-                      tooltip: 'X',
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      launchUrl(
-                        Uri.parse(
-                          'https://www.linkedin.com/in/mustafa-al-neaimi/',
-                        ),
-                      );
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
-                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    child: _SocialIcon(
-                      icon: 'assets/social_media_icons/linkedin1.png',
-                      url: 'https://www.linkedin.com/in/mustafa-al-neaimi/',
-                      tooltip: 'LinkedIn',
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      launchUrl(
-                        Uri.parse(
-                          'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
-                        ),
-                      );
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
-                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    child: _SocialIcon(
-                      icon: 'assets/social_media_icons/upwork.png',
-                      url:
-                          'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
-                      tooltip: 'Upwork',
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () {
-                      launchUrl(Uri.parse('https://github.com/MustafaAlneami'));
-                    },
-                    splashFactory: InkRipple.splashFactory,
-                    highlightColor: Colors.purpleAccent.withOpacity(0.3),
-                    hoverColor: Colors.purpleAccent.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    child: _SocialIcon(
-                      icon: 'assets/social_media_icons/githubicon.png',
-                      url: 'https://github.com/MustafaAlneami',
-                      tooltip: 'GitHub',
-                    ),
-                  ),
-                ],
-              ),
+              child: SocialSidebar(isDesktop: isDesktop),
             ),
           // Main Content and Projects Section (Scrollable)
           Positioned.fill(
@@ -640,6 +557,103 @@ class _NavItemState extends State<_NavItem> {
           style: TextStyle(
             color: _isHovered ? Colors.white : Colors.white70,
             fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SocialSidebar extends StatelessWidget {
+  final bool isDesktop;
+
+  const SocialSidebar({super.key, required this.isDesktop});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 60,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          RotatedBox(
+            quarterTurns: -1,
+            child: const Text(
+              'Follow Me',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(width: 2, height: 40, color: Colors.white),
+          const SizedBox(height: 16),
+          _buildSocialButton(
+            icon: 'assets/social_media_icons/x1.png',
+            url: 'https://x.com/MustaVerse',
+            tooltip: 'X',
+          ),
+          _buildSocialButton(
+            icon: 'assets/social_media_icons/linkedin1.png',
+            url: 'https://www.linkedin.com/in/mustafa-al-neaimi/',
+            tooltip: 'LinkedIn',
+          ),
+          _buildSocialButton(
+            icon: 'assets/social_media_icons/upwork.png',
+            url:
+                'https://www.upwork.com/freelancers/~0141dd50bdd8185b62?mp_source=share',
+            tooltip: 'Upwork',
+          ),
+          _buildSocialButton(
+            icon: 'assets/social_media_icons/githubicon.png',
+            url: 'https://github.com/MustafaAlneami',
+            tooltip: 'GitHub',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSocialButton({
+    required String icon,
+    required String url,
+    required String tooltip,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Tooltip(
+        message: tooltip,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () async {
+              try {
+                final Uri uri = Uri.parse(url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                } else {
+                  debugPrint('Could not launch URL: $url');
+                }
+              } catch (e) {
+                debugPrint('Error launching URL: $e');
+              }
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: Colors.purpleAccent.withOpacity(0.3),
+                  width: 1,
+                ),
+              ),
+              child: Image.asset(icon, width: 24, height: 24),
+            ),
           ),
         ),
       ),

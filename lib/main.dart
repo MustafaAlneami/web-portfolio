@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:firebase_core/firebase_core.dart'; // Temporarily remove for UI preview
-import 'view/portfolio_view.dart';
-import 'viewmodel/portfolio_viewmodel.dart';
-import 'utils/responsive_utils.dart';
+
 import 'pages/hero_section.dart';
 
 void main() async {
