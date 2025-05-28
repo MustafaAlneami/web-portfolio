@@ -9,60 +9,6 @@ import '../widgets/skills_carousel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-// Define _SocialIcon class at the top level
-class _SocialIcon extends StatelessWidget {
-  final String icon;
-  final String url;
-  final String tooltip;
-
-  const _SocialIcon({
-    required this.icon,
-    required this.url,
-    required this.tooltip,
-  });
-
-  Future<void> _launchURL() async {
-    try {
-      final Uri uri = Uri.parse(url);
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        debugPrint('Could not launch URL: $url');
-      }
-    } catch (e) {
-      debugPrint('Error launching URL: $e');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: Tooltip(
-          message: tooltip,
-          child: GestureDetector(
-            onTap: _launchURL,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(
-                  color: Colors.purpleAccent.withOpacity(0.3),
-                  width: 1,
-                ),
-              ),
-              child: Image.asset(icon, width: 24, height: 24),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class HeroSection extends StatefulWidget {
   const HeroSection({super.key});
 
@@ -140,11 +86,10 @@ class _HeroSectionState extends State<HeroSection> {
                                 curve: Curves.easeInOut,
                               );
                             },
-                            child: _NavItem('Home'),
+                            child: const _NavItem('Home'),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Scroll to the skills section
                               final RenderBox renderBox =
                                   _skillsSectionKey.currentContext
                                           ?.findRenderObject()
@@ -158,11 +103,10 @@ class _HeroSectionState extends State<HeroSection> {
                                 curve: Curves.easeInOut,
                               );
                             },
-                            child: _NavItem('Skills'),
+                            child: const _NavItem('Skills'),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Scroll to the projects section
                               final RenderBox renderBox =
                                   _projectsSectionKey.currentContext
                                           ?.findRenderObject()
@@ -176,11 +120,10 @@ class _HeroSectionState extends State<HeroSection> {
                                 curve: Curves.easeInOut,
                               );
                             },
-                            child: _NavItem('Projects'),
+                            child: const _NavItem('Projects'),
                           ),
                           GestureDetector(
                             onTap: () {
-                              // Scroll to the contact section
                               final RenderBox renderBox =
                                   _contactSectionKey.currentContext
                                           ?.findRenderObject()
@@ -194,7 +137,7 @@ class _HeroSectionState extends State<HeroSection> {
                                 curve: Curves.easeInOut,
                               );
                             },
-                            child: _NavItem('Contact'),
+                            child: const _NavItem('Contact'),
                           ),
                         ],
                       ),
@@ -223,131 +166,113 @@ class _HeroSectionState extends State<HeroSection> {
               ),
             ),
           ),
-          // Sidebar (hide on mobile)
-          if (!isMobile)
-            Positioned(
-              left: 0,
-              top: isDesktop ? 120 : 80,
-              bottom: 0,
-              child: SocialSidebar(isDesktop: isDesktop),
-            ),
           // Main Content and Projects Section (Scrollable)
           Positioned.fill(
             top: isMobile ? 80 : 120, // Adjust based on navigation bar height
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.vertical,
-              physics:
-                  const BouncingScrollPhysics(), // Use BouncingScrollPhysics for a nice effect
+              physics: const BouncingScrollPhysics(),
               child: Padding(
-                padding:
-                    padding, // Use responsive padding for the whole scrollable area
+                padding: padding,
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.center, // Center column content
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Hero Content (Texts and Mascot)
-                    isMobile || isNarrow
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              _HeroTexts(
+                    if (isMobile || isNarrow)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          _HeroTexts(
+                            headlineSize: headlineSize,
+                            subHeadlineSize: subHeadlineSize,
+                            gradient: gradient,
+                            spacing: spacing,
+                            buttonPadding: buttonPadding,
+                            isMobile: true,
+                          ),
+                          SizedBox(height: spacing * 2),
+                          BouncingMascotBox(
+                            mascotSize: mascotSize,
+                            gradient: gradient,
+                          ),
+                        ],
+                      )
+                    else
+                      ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: ResponsiveUtils.getContentWidth(context),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                              flex: 2,
+                              child: _HeroTexts(
                                 headlineSize: headlineSize,
                                 subHeadlineSize: subHeadlineSize,
                                 gradient: gradient,
                                 spacing: spacing,
                                 buttonPadding: buttonPadding,
-                                isMobile: true,
+                                isMobile: false,
                               ),
-                              SizedBox(height: spacing * 2),
-                              BouncingMascotBox(
+                            ),
+                            SizedBox(width: spacing * 2),
+                            Flexible(
+                              flex: 1,
+                              child: BouncingMascotBox(
                                 mascotSize: mascotSize,
                                 gradient: gradient,
                               ),
-                            ],
-                          )
-                        : ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: ResponsiveUtils.getContentWidth(
-                                context,
-                              ),
                             ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  flex: 2,
-                                  child: _HeroTexts(
-                                    headlineSize: headlineSize,
-                                    subHeadlineSize: subHeadlineSize,
-                                    gradient: gradient,
-                                    spacing: spacing,
-                                    buttonPadding: buttonPadding,
-                                    isMobile: false,
-                                  ),
-                                ),
-                                SizedBox(width: spacing * 2),
-                                Flexible(
-                                  flex: 1,
-                                  child: BouncingMascotBox(
-                                    mascotSize: mascotSize,
-                                    gradient: gradient,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                    SizedBox(
-                      height: spacing * 2,
-                    ), // Reduced space after hero content and before skills carousel
-                    // Skills Carousel
+                          ],
+                        ),
+                      ),
+                    SizedBox(height: spacing * 2),
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: ResponsiveUtils.getContentWidth(context),
                       ),
                       child: const SkillsCarousel(),
                     ),
-                    const SizedBox(
-                      height: 48,
-                    ), // Space between carousel and skills section
-                    // Skills Section
+                    const SizedBox(height: 48),
                     SkillsSection(key: _skillsSectionKey),
-                    const SizedBox(height: 48), // Consistent space after skills
-                    // Projects Section
+                    const SizedBox(height: 48),
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: ResponsiveUtils.getContentWidth(context),
-                      ), // Constrain width for larger screens
+                      ),
                       child: ProjectsSection(
                         key: _projectsSectionKey,
                         viewModel: viewModel,
                       ),
                     ),
-                    const SizedBox(
-                      height: 48,
-                    ), // Consistent space after projects
-                    // Divider (Moved before contact section)
+                    const SizedBox(height: 48),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: spacing * 2,
                         horizontal: ResponsiveUtils.getResponsivePadding(
                           context,
                         ).horizontal,
-                      ), // Add padding around divider
-                      child: Divider(
-                        color: Colors.white12,
-                        thickness: 1,
-                      ), // Add a subtle divider
+                      ),
+                      child: Divider(color: Colors.white12, thickness: 1),
                     ),
                     const SizedBox(height: 48),
-                    // Contact Section
                     ContactSection(key: _contactSectionKey),
                   ],
                 ),
               ),
             ),
           ),
+          // Sidebar (hide on mobile) - only show on tablet and desktop/web
+          if (!ResponsiveUtils.isMobile(context))
+            Positioned(
+              left: 0,
+              top: isDesktop ? 120 : 80,
+              bottom: 0,
+              child: SocialSidebar(isDesktop: isDesktop),
+            ),
         ],
       ),
     );
