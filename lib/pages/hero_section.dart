@@ -143,23 +143,16 @@ class _HeroSectionState extends State<HeroSection> {
                       ),
                     ),
                   // WhatsApp Button
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: gradient,
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                    child: Padding(
-                      padding: buttonPadding,
-                      child: Row(
-                        children: const [
-                          Icon(Icons.message, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text(
-                            'Whatsapp',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
-                      ),
+                  GradientButton(
+                    gradient: gradient,
+                    padding: buttonPadding,
+                    url: 'https://wa.me/9647725735393',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.message, color: Colors.white),
+                        SizedBox(width: 8),
+                        Text('Whatsapp', style: TextStyle(color: Colors.white)),
+                      ],
                     ),
                   ),
                 ],
@@ -279,6 +272,76 @@ class _HeroSectionState extends State<HeroSection> {
   }
 }
 
+class GradientButton extends StatefulWidget {
+  final Gradient gradient;
+  final EdgeInsets padding;
+  final Widget child;
+  final VoidCallback? onTap;
+  final String? url;
+
+  const GradientButton({
+    super.key,
+    required this.gradient,
+    required this.padding,
+    required this.child,
+    this.onTap,
+    this.url,
+  });
+
+  @override
+  State<GradientButton> createState() => _GradientButtonState();
+}
+
+class _GradientButtonState extends State<GradientButton> {
+  bool isHovered = false;
+
+  Future<void> _handleTap() async {
+    if (widget.url != null) {
+      try {
+        final Uri uri = Uri.parse(widget.url!);
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          debugPrint('Could not launch URL: ${widget.url}');
+        }
+      } catch (e) {
+        debugPrint('Error launching URL: $e');
+      }
+    }
+    widget.onTap?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: _handleTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          decoration: BoxDecoration(
+            gradient: widget.gradient,
+            borderRadius: BorderRadius.circular(32),
+            boxShadow: [
+              if (isHovered)
+                BoxShadow(
+                  color: Colors.purpleAccent.withOpacity(0.5),
+                  blurRadius: 12,
+                  spreadRadius: 2,
+                ),
+            ],
+          ),
+          transform: Matrix4.identity()..scale(isHovered ? 1.05 : 1.0),
+          child: Padding(padding: widget.padding, child: widget.child),
+        ),
+      ),
+    );
+  }
+}
+
 class _HeroTexts extends StatelessWidget {
   final double headlineSize;
   final double subHeadlineSize;
@@ -343,26 +406,23 @@ class _HeroTexts extends StatelessWidget {
           style: TextStyle(color: Colors.white70, fontSize: 16),
         ),
         SizedBox(height: 30),
-        Container(
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(32),
-          ),
-          child: Padding(
-            padding: buttonPadding,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: const [
-                Text(
-                  'Download CV ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
+        GradientButton(
+          gradient: gradient,
+          padding: buttonPadding,
+          url:
+              'https://drive.google.com/file/d/1aWa6SSSmzfDor4xPAZZLaVFWkik9tiPL/view?usp=sharing',
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Text(
+                'Download CV ',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
                 ),
-                Icon(Icons.download, color: Colors.white),
-              ],
-            ),
+              ),
+              Icon(Icons.download, color: Colors.white),
+            ],
           ),
         ),
         SizedBox(height: ResponsiveUtils.getResponsiveSpacing(context, 15)),
@@ -480,7 +540,7 @@ class _NavItemState extends State<_NavItem> {
         child: Text(
           widget.label,
           style: TextStyle(
-            color: _isHovered ? Colors.white : Colors.white70,
+            color: _isHovered ? Colors.white : Colors.white,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -505,7 +565,7 @@ class SocialSidebar extends StatelessWidget {
           RotatedBox(
             quarterTurns: -1,
             child: const Text(
-              'Follow Me',
+              'Get in touch 💬',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16,
