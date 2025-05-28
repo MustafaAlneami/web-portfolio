@@ -1,5 +1,5 @@
 # Flutter Portfolio Website
-
+### [Vibe coded using Cursor ! ]
 A modern, responsive portfolio website built with Flutter, showcasing my skills, projects, and professional experience as a Flutter Developer.
 
 ## 🌟 Features
@@ -50,38 +50,9 @@ A modern, responsive portfolio website built with Flutter, showcasing my skills,
 
 - **Flutter** - UI Framework
 - **Dart** - Programming Language
-- **Firebase** - Backend Services
 - **URL Launcher** - External Link Handling
 - **Custom Animations** - For enhanced user experience
 
-## 🚀 Getting Started
-
-### Prerequisites
-- Flutter SDK (latest version)
-- Dart SDK
-- Git
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/web_portfolio.git
-```
-
-2. Navigate to the project directory:
-```bash
-cd web_portfolio
-```
-
-3. Install dependencies:
-```bash
-flutter pub get
-```
-
-4. Run the project:
-```bash
-flutter run -d chrome
-```
 
 ## 📱 Responsive Design
 
@@ -102,12 +73,6 @@ The portfolio is designed to work seamlessly across all devices:
 - Modify skills and descriptions
 - Update personal information and links
 
-## 🔧 Configuration
-
-The project uses several configuration files:
-- `pubspec.yaml` - Dependencies and assets
-- `responsive_utils.dart` - Responsive design utilities
-- Theme configuration in the main app file
 
 ## 📄 License
 
